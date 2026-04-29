@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaxBooks.CFO — Full-Spectrum Financial Partnership</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080809;
+  --charcoal: #0E0F12;
+  --dark: #141519;
+  --dark2: #1C1D22;
+  --white: #FAFAF8;
+  --warm: #F3F1EC;
+  --gold: #B8922A;
+  --gold-light: #D4AA4A;
+  --gold-pale: #EDD98A;
+  --red: #9B1D28;
+  --navy: #0D1F3C;
+  --muted: #6B6B72;
+  --border: rgba(255,255,255,0.07);
+  --border-light: rgba(0,0,0,0.08);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; font-size:16px; }
+
+body {
+  font-family:'Outfit', sans-serif;
+  background:var(--white);
+  color:var(--black);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* Custom cursor */
+.cursor {
+  position:fixed; width:8px; height:8px;
+  background:var(--gold); border-radius:50%;
+  pointer-events:none; z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+  mix-blend-mode:difference;
+}
+.cursor-follower {
+  position:fixed; width:36px; height:36px;
+  border:1px solid rgba(184,146,42,0.4);
+  border-radius:50%; pointer-events:none; z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:transform 0.15s ease, width 0.3s, height 0.3s, opacity 0.3s;
+}
+body:has(a:hover) .cursor { width:14px; height:14px; }
+body:has(a:hover) .cursor-follower { width:52px; height:52px; opacity:0.6; }
+
+/* Grain overlay */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:9997; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:0.35;
+}
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  height:68px; display:flex; align-items:center;
+  padding:0 5%;
+  transition:background 0.4s, border-color 0.4s;
+}
+nav.scrolled {
+  background:rgba(8,8,9,0.96);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner { display:flex; align-items:center; justify-content:space-between; width:100%; }
+
+.nav-logo { display:flex; align-items:center; gap:14px; text-decoration:none; }
+.logo-mark {
+  width:38px; height:38px; position:relative;
+  border:1px solid rgba(184,146,42,0.3);
+}
+.logo-mark-flag {
+  width:100%; height:100%;
+  background:repeating-linear-gradient(to bottom,
+    #9B1D28 0,#9B1D28 20%,
+    #FAFAF8 20%,#FAFAF8 40%,
+    #9B1D28 40%,#9B1D28 60%,
+    #FAFAF8 60%,#FAFAF8 80%,
+    #9B1D28 80%,#9B1D28 100%);
+  position:relative;
+}
+.logo-canton {
+  position:absolute; top:0; left:0;
+  width:42%; height:46%; background:#0D1F3C;
+  display:flex; align-items:center; justify-content:center;
+}
+.logo-canton::after { content:'★'; color:#fff; font-size:9px; }
+.nav-wordmark {
+  font-family:'Cormorant Garamond', serif;
+  font-size:20px; font-weight:600;
+  color:var(--white); letter-spacing:0.5px;
+}
+.nav-wordmark em { font-style:normal; color:var(--gold); }
+
+.nav-links { display:flex; align-items:center; gap:32px; list-style:none; }
+.nav-links a {
+  font-size:12px; font-weight:400; letter-spacing:1.5px;
+  text-transform:uppercase; color:rgba(255,255,255,0.5);
+  text-decoration:none; transition:color 0.25s;
+}
+.nav-links a:hover { color:var(--white); }
+.nav-cta {
+  font-size:11px !important; font-weight:500 !important;
+  letter-spacing:2px !important; color:var(--gold) !important;
+  border:1px solid rgba(184,146,42,0.4) !important;
+  padding:9px 22px; transition:all 0.25s !important;
+  text-decoration:none;
+}
+.nav-cta:hover { background:var(--gold) !important; color:var(--black) !important; border-color:var(--gold) !important; }
+
+/* ── HERO ── */
+.hero {
+  height:100vh; min-height:700px;
+  background:var(--charcoal);
+  display:grid; grid-template-columns:1fr 1fr;
+  position:relative; overflow:hidden;
+}
+
+.hero-bg {
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 80% at 15% 60%, rgba(13,31,60,0.6) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 50% at 85% 20%, rgba(155,29,40,0.08) 0%, transparent 55%);
+}
+
+/* Thin vertical lines — architectural feel */
+.hero-grid {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 25%);
+}
+
+.hero-left {
+  padding:140px 7% 80px 8%;
+  display:flex; flex-direction:column; justify-content:center;
+  position:relative; z-index:2;
+}
+
+.hero-eyebrow {
+  display:flex; align-items:center; gap:14px; margin-bottom:40px;
+  opacity:0; animation:fadeUp 0.8s 0.3s forwards;
+}
+.hero-eyebrow-line { width:40px; height:1px; background:var(--gold); }
+.hero-eyebrow span {
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px; color:var(--gold);
+  letter-spacing:4px; text-transform:uppercase;
+}
+
+.hero-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:clamp(52px, 6vw, 88px);
+  font-weight:300; line-height:1.0;
+  color:var(--white); letter-spacing:-1px;
+  margin-bottom:32px;
+  opacity:0; animation:fadeUp 0.9s 0.5s forwards;
+}
+.hero-title strong { font-weight:600; display:block; }
+.hero-title .outline {
+  -webkit-text-stroke:1px rgba(255,255,255,0.2);
+  color:transparent;
+  display:block;
+}
+
+.hero-rule {
+  width:80px; height:1px; background:var(--gold);
+  margin-bottom:28px;
+  opacity:0; animation:fadeUp 0.8s 0.7s forwards;
+}
+
+.hero-desc {
+  font-size:15px; line-height:1.8; font-weight:300;
+  color:rgba(255,255,255,0.5);
+  max-width:440px; margin-bottom:52px;
+  opacity:0; animation:fadeUp 0.8s 0.8s forwards;
+}
+
+.hero-actions {
+  display:flex; gap:20px; align-items:center;
+  margin-bottom:72px;
+  opacity:0; animation:fadeUp 0.8s 0.9s forwards;
+}
+.btn-gold {
+  font-size:11px; font-weight:500; letter-spacing:2.5px;
+  text-transform:uppercase; color:var(--black);
+  background:var(--gold); padding:16px 36px;
+  text-decoration:none; transition:all 0.25s;
+  display:inline-block;
+}
+.btn-gold:hover { background:var(--gold-light); transform:translateY(-2px); }
+.btn-ghost {
+  font-size:11px; font-weight:400; letter-spacing:2px;
+  text-transform:uppercase; color:rgba(255,255,255,0.45);
+  text-decoration:none; display:flex; align-items:center; gap:10px;
+  transition:color 0.25s;
+}
+.btn-ghost:hover { color:var(--white); }
+.btn-ghost::after { content:'→'; transition:transform 0.25s; }
+.btn-ghost:hover::after { transform:translateX(5px); }
+
+.hero-stats {
+  display:flex; gap:48px;
+  padding-top:36px;
+  border-top:1px solid rgba(255,255,255,0.07);
+  opacity:0; animation:fadeUp 0.8s 1.0s forwards;
+}
+.hero-stat-n {
+  font-family:'Cormorant Garamond', serif;
+  font-size:38px; font-weight:500; color:var(--white);
+  line-height:1; margin-bottom:5px;
+}
+.hero-stat-n span { color:var(--gold); }
+.hero-stat-l {
+  font-size:10px; font-weight:400; letter-spacing:2px;
+  text-transform:uppercase; color:rgba(255,255,255,0.35);
+}
+
+.hero-right {
+  display:flex; align-items:center;
+  padding:140px 8% 80px 5%;
+  position:relative; z-index:2;
+  border-left:1px solid rgba(255,255,255,0.04);
+}
+
+.hero-services { width:100%; }
+.hero-service {
+  display:flex; align-items:flex-start; gap:24px;
+  padding:24px 0;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  transition:background 0.2s;
+  cursor:default;
+}
+.hero-service:first-child { border-top:1px solid rgba(255,255,255,0.05); }
+.hs-num {
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px; color:var(--gold);
+  letter-spacing:1px; min-width:22px; margin-top:3px;
+}
+.hs-content h3 { font-size:14px; font-weight:500; color:var(--white); margin-bottom:4px; }
+.hs-content p { font-size:12px; color:rgba(255,255,255,0.3); line-height:1.6; font-weight:300; }
+
+/* ── MARQUEE STRIP ── */
+.marquee-strip {
+  background:var(--gold);
+  padding:14px 0; overflow:hidden;
+  white-space:nowrap;
+}
+.marquee-inner { display:inline-block; animation:marquee 25s linear infinite; }
+.marquee-inner span {
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px; letter-spacing:3px;
+  text-transform:uppercase; color:var(--black);
+  padding:0 40px;
+}
+.marquee-inner span::before { content:'◆ '; opacity:0.4; }
+
+/* ── SECTIONS ── */
+.section { padding:120px 8%; }
+.section-dark { background:var(--charcoal); }
+.section-warm { background:var(--warm); }
+.section-black { background:var(--black); }
+.section-white { background:var(--white); }
+
+.eyebrow {
+  display:flex; align-items:center; gap:12px;
+  margin-bottom:18px;
+}
+.eyebrow-line { width:28px; height:1px; background:var(--gold); }
+.eyebrow span {
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px; letter-spacing:3.5px;
+  text-transform:uppercase; color:var(--gold);
+}
+
+.display-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:clamp(36px, 4.5vw, 62px);
+  font-weight:400; line-height:1.1;
+  letter-spacing:-0.5px;
+}
+.display-title.light { color:var(--white); }
+.display-title.dark { color:var(--black); }
+.display-title em { font-style:italic; color:var(--gold); font-weight:300; }
+
+.body-lead {
+  font-size:15px; font-weight:300; line-height:1.85;
+  max-width:580px; margin-top:20px; margin-bottom:60px;
+}
+.body-lead.light { color:rgba(255,255,255,0.45); }
+.body-lead.dark { color:var(--muted); }
+
+/* ── VISION MISSION ── */
+.vm-layout {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:2px; background:rgba(255,255,255,0.05);
+  margin-top:60px;
+}
+.vm-card {
+  padding:60px 52px;
+  background:var(--dark);
+  position:relative;
+  overflow:hidden;
+  transition:background 0.3s;
+}
+.vm-card:hover { background:var(--dark2); }
+.vm-card::before {
+  content:''; position:absolute;
+  top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, var(--gold) 0%, transparent 70%);
+}
+.vm-card-tag {
+  font-family:'JetBrains Mono', monospace;
+  font-size:9px; letter-spacing:4px;
+  text-transform:uppercase; color:var(--gold);
+  margin-bottom:28px; display:flex; align-items:center; gap:8px;
+}
+.vm-card-tag::before {
+  content:''; width:5px; height:5px;
+  background:var(--gold); border-radius:50%;
+}
+.vm-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:28px; font-weight:400; font-style:italic;
+  color:var(--white); line-height:1.25;
+  margin-bottom:24px; letter-spacing:-0.2px;
+}
+.vm-body { font-size:14px; font-weight:300; color:rgba(255,255,255,0.45); line-height:1.85; margin-bottom:32px; }
+.vm-body strong { color:rgba(255,255,255,0.75); font-weight:400; }
+.vm-points { list-style:none; display:flex; flex-direction:column; gap:12px; }
+.vm-point {
+  font-size:13px; font-weight:300; color:rgba(255,255,255,0.4);
+  display:flex; align-items:flex-start; gap:12px; line-height:1.6;
+}
+.vm-point::before {
+  content:''; width:16px; height:1px;
+  background:var(--gold); flex-shrink:0; margin-top:9px;
+}
+
+/* ── TEAM GRID ── */
+.team-grid {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:1px; background:var(--border-light);
+  margin-top:60px;
+}
+.team-card {
+  background:var(--white); padding:36px 30px;
+  position:relative; overflow:hidden;
+  transition:all 0.3s;
+}
+.team-card:hover { background:var(--warm); }
+.team-card::after {
+  content:''; position:absolute;
+  bottom:0; left:0; right:0; height:2px;
+  background:var(--gold); transform:scaleX(0);
+  transform-origin:left; transition:transform 0.35s;
+}
+.team-card:hover::after { transform:scaleX(1); }
+.tc-badge {
+  font-family:'JetBrains Mono', monospace;
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--white); background:var(--black);
+  padding:4px 10px; display:inline-block; margin-bottom:18px;
+}
+.tc-title { font-size:15px; font-weight:500; color:var(--black); margin-bottom:10px; }
+.tc-body { font-size:12px; font-weight:300; color:var(--muted); line-height:1.75; }
+
+/* ── SERVICES ── */
+.services-layout {
+  display:grid; grid-template-columns:260px 1fr;
+  gap:60px; margin-top:60px;
+  align-items:start;
+}
+.services-tabs { position:sticky; top:100px; }
+.stab {
+  display:flex; align-items:center; gap:14px;
+  padding:18px 0; border-bottom:1px solid var(--border-light);
+  cursor:pointer; transition:all 0.2s;
+}
+.stab-num {
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px; color:rgba(0,0,0,0.2);
+  min-width:20px; transition:color 0.2s;
+}
+.stab-bar { width:0; height:1px; background:var(--gold); transition:width 0.3s; }
+.stab-label { font-size:13px; font-weight:400; color:var(--muted); transition:color 0.2s; }
+.stab.active .stab-num { color:var(--gold); }
+.stab.active .stab-bar { width:22px; }
+.stab.active .stab-label { color:var(--black); font-weight:500; }
+
+.service-panel { display:none; animation:fadeIn 0.35s ease; }
+.service-panel.active { display:block; }
+.sp-header {
+  background:var(--black); padding:44px 48px;
+  margin-bottom:2px;
+}
+.sp-num {
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px; letter-spacing:3px;
+  color:var(--gold); margin-bottom:14px;
+}
+.sp-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:32px; font-weight:400; color:var(--white);
+  line-height:1.15; margin-bottom:14px;
+}
+.sp-desc { font-size:13px; font-weight:300; color:rgba(255,255,255,0.4); line-height:1.75; }
+.sp-items {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:1px; background:var(--border-light);
+}
+.sp-item {
+  background:var(--warm); padding:20px 24px;
+  display:flex; align-items:flex-start; gap:12px;
+  transition:background 0.2s;
+}
+.sp-item:hover { background:var(--white); }
+.sp-dash { color:var(--gold); font-weight:700; font-size:14px; flex-shrink:0; }
+.sp-item-text { font-size:13px; font-weight:300; color:var(--black); line-height:1.55; }
+
+/* ── USP SECTION ── */
+.usp-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:2px; background:rgba(255,255,255,0.04);
+  margin-top:60px;
+}
+.usp-card {
+  padding:60px 52px; position:relative;
+  overflow:hidden;
+}
+.usp-card.light { background:var(--warm); }
+.usp-card.dark { background:var(--dark); }
+.usp-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:var(--gold);
+}
+.usp-tag {
+  font-family:'JetBrains Mono', monospace;
+  font-size:9px; letter-spacing:4px;
+  text-transform:uppercase; margin-bottom:28px;
+  display:flex; align-items:center; gap:8px;
+}
+.usp-tag.light { color:var(--black); opacity:0.4; }
+.usp-tag.dark { color:var(--gold); }
+.usp-num {
+  width:22px; height:22px; border-radius:50%;
+  background:var(--gold); display:flex; align-items:center; justify-content:center;
+  font-size:9px; color:var(--black); flex-shrink:0;
+}
+.usp-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:30px; font-weight:400; line-height:1.2;
+  margin-bottom:14px; letter-spacing:-0.3px;
+}
+.usp-title.light { color:var(--black); }
+.usp-title.dark { color:var(--white); }
+.usp-hook { font-size:13px; font-weight:500; color:var(--gold); margin-bottom:20px; }
+.usp-body { font-size:13px; font-weight:300; line-height:1.85; margin-bottom:32px; }
+.usp-body.light { color:var(--muted); }
+.usp-body.dark { color:rgba(255,255,255,0.4); }
+.usp-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.usp-list li {
+  font-size:12px; font-weight:300;
+  display:flex; align-items:flex-start; gap:10px; line-height:1.6;
+}
+.usp-list li::before { content:'→'; color:var(--gold); font-weight:400; flex-shrink:0; }
+.usp-list.light li { color:var(--muted); }
+.usp-list.dark li { color:rgba(255,255,255,0.4); }
+
+/* ── SUCCESSION SECTION ── */
+.succession-layout {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:80px; align-items:center;
+}
+.succession-left { }
+.succession-right {
+  display:flex; flex-direction:column; gap:1px;
+}
+.succ-card {
+  background:rgba(255,255,255,0.03);
+  padding:32px 36px; border-left:1px solid transparent;
+  transition:all 0.3s; cursor:default;
+}
+.succ-card:hover {
+  background:rgba(255,255,255,0.06);
+  border-left-color:var(--gold);
+}
+.succ-n {
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px; color:var(--gold); letter-spacing:2px;
+  margin-bottom:10px;
+}
+.succ-title { font-size:15px; font-weight:500; color:var(--white); margin-bottom:8px; }
+.succ-body { font-size:13px; font-weight:300; color:rgba(255,255,255,0.38); line-height:1.7; }
+
+/* ── WHO WE SERVE ── */
+.serve-grid {
+  display:grid; grid-template-columns:repeat(2,1fr);
+  gap:1px; background:var(--border-light);
+  margin-top:60px;
+}
+.serve-card {
+  background:var(--white); padding:44px 40px;
+  position:relative; overflow:hidden; transition:background 0.3s;
+}
+.serve-card:hover { background:var(--warm); }
+.serve-card::before {
+  content:''; position:absolute;
+  top:0; left:0; bottom:0; width:3px;
+  background:transparent; transition:background 0.3s;
+}
+.serve-card:hover::before { background:var(--gold); }
+.sc-badge {
+  font-family:'JetBrains Mono', monospace;
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--black); border:1px solid rgba(0,0,0,0.15);
+  padding:4px 10px; display:inline-block; margin-bottom:20px;
+}
+.sc-title { font-family:'Cormorant Garamond', serif; font-size:22px; font-weight:500; color:var(--black); margin-bottom:12px; }
+.sc-body { font-size:13px; font-weight:300; color:var(--muted); line-height:1.8; }
+
+/* ── FAQ ── */
+.faq-list { margin-top:60px; display:flex; flex-direction:column; }
+.faq-item {
+  border-top:1px solid var(--border-light);
+  padding:28px 0; cursor:pointer;
+  transition:padding 0.3s;
+}
+.faq-item:last-child { border-bottom:1px solid var(--border-light); }
+.faq-q-row { display:flex; align-items:center; justify-content:space-between; gap:20px; }
+.faq-q {
+  font-size:15px; font-weight:400; color:var(--black);
+  line-height:1.4; flex:1;
+}
+.faq-icon {
+  width:28px; height:28px; border:1px solid rgba(0,0,0,0.12);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:all 0.3s; font-size:16px;
+  color:var(--muted);
+}
+.faq-item.open .faq-icon { background:var(--gold); border-color:var(--gold); color:var(--black); transform:rotate(45deg); }
+.faq-a {
+  font-size:13px; font-weight:300; color:var(--muted);
+  line-height:1.85; max-height:0; overflow:hidden;
+  transition:max-height 0.4s ease, padding 0.3s;
+}
+.faq-item.open .faq-a { max-height:200px; padding-top:16px; }
+
+/* ── CTA / CONTACT ── */
+.contact-section {
+  background:var(--black);
+  padding:120px 8%;
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:80px; position:relative; overflow:hidden;
+}
+.contact-section::before {
+  content:''; position:absolute;
+  left:0; top:0; bottom:0; width:3px;
+  background:linear-gradient(to bottom, transparent, var(--gold), transparent);
+}
+.contact-section::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(ellipse 50% 80% at 90% 50%, rgba(155,29,40,0.04) 0%, transparent 70%);
+}
+
+.contact-left { position:relative; z-index:2; }
+.contact-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:clamp(42px, 5vw, 68px);
+  font-weight:300; color:var(--white);
+  line-height:1.05; letter-spacing:-1px; margin-bottom:24px;
+}
+.contact-title strong { font-weight:600; color:var(--gold); display:block; }
+.contact-sub {
+  font-size:14px; font-weight:300; color:rgba(255,255,255,0.35);
+  line-height:1.8; margin-bottom:48px; max-width:400px;
+}
+.contact-details { display:flex; flex-direction:column; gap:16px; }
+.cd-row { display:flex; align-items:center; gap:16px; }
+.cd-label {
+  font-family:'JetBrains Mono', monospace;
+  font-size:9px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--gold); min-width:72px;
+}
+.cd-val { font-size:13px; font-weight:300; color:rgba(255,255,255,0.5); }
+.cd-val a { color:rgba(255,255,255,0.5); text-decoration:none; transition:color 0.2s; }
+.cd-val a:hover { color:var(--white); }
+
+.contact-socials { display:flex; gap:10px; margin-top:40px; }
+.social-btn {
+  width:40px; height:40px; border:1px solid rgba(255,255,255,0.1);
+  display:flex; align-items:center; justify-content:center;
+  text-decoration:none; transition:all 0.25s;
+}
+.social-btn:hover { border-color:var(--gold); background:rgba(184,146,42,0.1); }
+.social-btn svg { width:15px; height:15px; fill:rgba(255,255,255,0.4); transition:fill 0.25s; }
+.social-btn:hover svg { fill:var(--gold); }
+
+.contact-right { position:relative; z-index:2; }
+.form-card {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.07);
+  padding:44px 40px;
+}
+.form-card-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:22px; font-weight:400; color:var(--white);
+  margin-bottom:6px;
+}
+.form-card-sub { font-size:12px; font-weight:300; color:rgba(255,255,255,0.3); margin-bottom:32px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.form-group { margin-bottom:14px; }
+.form-group label {
+  display:block; font-family:'JetBrains Mono', monospace;
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  color:rgba(255,255,255,0.3); margin-bottom:7px;
+}
+.form-group input, .form-group select {
+  width:100%; background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--white); padding:12px 14px;
+  font-size:13px; font-family:'Outfit', sans-serif;
+  outline:none; transition:border-color 0.25s;
+}
+.form-group input::placeholder { color:rgba(255,255,255,0.2); }
+.form-group input:focus, .form-group select:focus { border-color:var(--gold); }
+.form-group select option { background:var(--black); }
+.form-submit {
+  width:100%; background:var(--gold); color:var(--black);
+  border:none; padding:15px; font-size:11px; font-weight:500;
+  letter-spacing:3px; text-transform:uppercase;
+  font-family:'Outfit', sans-serif; cursor:pointer;
+  transition:background 0.25s; margin-top:8px;
+  text-decoration:none; display:block; text-align:center;
+}
+.form-submit:hover { background:var(--gold-light); }
+
+/* ── FOOTER ── */
+footer {
+  background:#050506; padding:64px 8% 32px;
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+.footer-grid {
+  display:grid; grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:60px; margin-bottom:48px; padding-bottom:48px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.footer-brand-name {
+  font-family:'Cormorant Garamond', serif;
+  font-size:22px; font-weight:500; color:var(--white); margin-bottom:14px;
+}
+.footer-brand-name em { font-style:normal; color:var(--gold); }
+.footer-desc { font-size:12px; font-weight:300; color:rgba(255,255,255,0.25); line-height:1.8; margin-bottom:24px; }
+.footer-creds { display:flex; flex-wrap:wrap; gap:6px; }
+.footer-cred {
+  font-family:'JetBrains Mono', monospace;
+  font-size:9px; letter-spacing:1.5px;
+  border:1px solid rgba(255,255,255,0.08);
+  color:rgba(255,255,255,0.25); padding:3px 8px;
+  text-transform:uppercase;
+}
+.footer-col h4 {
+  font-family:'JetBrains Mono', monospace;
+  font-size:9px; letter-spacing:3px; text-transform:uppercase;
+  color:rgba(255,255,255,0.2); margin-bottom:20px;
+}
+.footer-links { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.footer-links a {
+  font-size:12px; font-weight:300; color:rgba(255,255,255,0.3);
+  text-decoration:none; transition:color 0.2s;
+}
+.footer-links a:hover { color:var(--gold); }
+.footer-bottom {
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:11px; color:rgba(255,255,255,0.18);
+}
+.footer-legal { display:flex; gap:24px; }
+.footer-legal a { color:rgba(255,255,255,0.18); text-decoration:none; }
+.footer-legal a:hover { color:rgba(255,255,255,0.4); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(8px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes marquee {
+  from { transform:translateX(0); }
+  to { transform:translateX(-50%); }
+}
+
+.reveal { opacity:0; transform:translateY(28px); transition:opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-delay-1 { transition-delay:0.1s; }
+.reveal-delay-2 { transition-delay:0.2s; }
+.reveal-delay-3 { transition-delay:0.3s; }
+.reveal-delay-4 { transition-delay:0.4s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width:1100px) {
+  .hero { grid-template-columns:1fr; }
+  .hero-right { display:none; }
+  .succession-layout { grid-template-columns:1fr; gap:48px; }
+  .services-layout { grid-template-columns:1fr; }
+  .services-tabs { position:static; display:grid; grid-template-columns:repeat(2,1fr); }
+  .usp-grid { grid-template-columns:1fr; }
+  .vm-layout { grid-template-columns:1fr; }
+  .team-grid { grid-template-columns:repeat(2,1fr); }
+  .contact-section { grid-template-columns:1fr; gap:52px; }
+  .footer-grid { grid-template-columns:1fr 1fr; gap:40px; }
+}
+@media (max-width:768px) {
+  .section { padding:80px 5%; }
+  nav { padding:0 5%; }
+  .nav-links { display:none; }
+  .hero-left { padding:120px 5% 60px; }
+  .team-grid { grid-template-columns:1fr; }
+  .serve-grid { grid-template-columns:1fr; }
+  .sp-items { grid-template-columns:1fr; }
+  .footer-grid { grid-template-columns:1fr; }
+  .hero-stats { flex-wrap:wrap; gap:28px; }
+  .form-row { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="follower"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="logo-mark">
+        <div class="logo-mark-flag">
+          <div class="logo-canton"></div>
+        </div>
+      </div>
+      <div class="nav-wordmark">TaxBooks<em>.CFO</em></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#team">Our Collective</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#succession">Succession</a></li>
+      <li><a href="#serve">Who We Serve</a></li>
+      <li><a href="https://calendly.com/charantej227/30min" target="_blank" class="nav-cta">Schedule a Call</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-line"></div>
+      <span>Full-Spectrum Financial Partnership</span>
+    </div>
+    <h1 class="hero-title">
+      <strong>Beyond Tax.</strong>
+      <span class="outline">Beyond</span>
+      Accounting.
+    </h1>
+    <div class="hero-rule"></div>
+    <p class="hero-desc">A collective of Chartered Accountants, CPAs and Enrolled Agents — delivering institutional-grade Tax, Bookkeeping, Fractional CFO and M&A Advisory to businesses and practitioners across America.</p>
+    <div class="hero-actions">
+      <a href="https://calendly.com/charantej227/30min" target="_blank" class="btn-gold">Schedule a Discovery Call</a>
+      <a href="#services" class="btn-ghost">Explore Services</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-n">25<span>+</span></div>
+        <div class="hero-stat-l">Years Combined</div>
+      </div>
+      <div>
+        <div class="hero-stat-n">3</div>
+        <div class="hero-stat-l">Service Lines</div>
+      </div>
+      <div>
+        <div class="hero-stat-n">50</div>
+        <div class="hero-stat-l">States Served</div>
+      </div>
+      <div>
+        <div class="hero-stat-n">CA<span>+</span></div>
+        <div class="hero-stat-l">CPA + EA</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-services">
+      <div class="hero-service"><span class="hs-num">01</span><div class="hs-content"><h3>Core Accounting &amp; Tax</h3><p>1040, 1040-NR, S-Corp, Partnership, Trust — all entity types, all states</p></div></div>
+      <div class="hero-service"><span class="hs-num">02</span><div class="hs-content"><h3>Fractional CFO</h3><p>Cash flow strategy, board reporting, financial modelling — without a full-time hire</p></div></div>
+      <div class="hero-service"><span class="hs-num">03</span><div class="hs-content"><h3>M&amp;A Transaction Advisory</h3><p>Quality of Earnings, due diligence, deal structuring — in-house capability</p></div></div>
+      <div class="hero-service"><span class="hs-num">04</span><div class="hs-content"><h3>Practice Succession</h3><p>Structured transition arrangements for retirement-minded CPAs and EAs</p></div></div>
+      <div class="hero-service"><span class="hs-num">05</span><div class="hs-content"><h3>White-Label Overflow</h3><p>Extensions, bookkeeping, preparation — under your brand, to your SLA</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <span>Tax Preparation</span><span>Fractional CFO</span><span>M&amp;A Advisory</span><span>Bookkeeping</span><span>IRS Representation</span><span>Due Diligence</span><span>Practice Succession</span><span>Quality of Earnings</span><span>Tax Preparation</span><span>Fractional CFO</span><span>M&amp;A Advisory</span><span>Bookkeeping</span><span>IRS Representation</span><span>Due Diligence</span><span>Practice Succession</span><span>Quality of Earnings</span>
+  </div>
+</div>
+
+<!-- VISION & MISSION -->
+<section class="section section-black">
+  <div class="eyebrow reveal">
+    <div class="eyebrow-line"></div>
+    <span>Purpose &amp; Direction</span>
+  </div>
+  <h2 class="display-title light reveal">What drives <em>everything</em><br>we do.</h2>
+  <div class="vm-layout">
+    <div class="vm-card reveal">
+      <div class="vm-card-tag">Our Vision</div>
+      <h3 class="vm-title">To be the most trusted financial partner for businesses and practitioners across America.</h3>
+      <p class="vm-body">We believe <strong>world-class accounting, CFO guidance and transaction advisory</strong> should not be exclusive to corporations that can afford Big 4 fees. TaxBooks.CFO exists to bridge that gap — delivering institutional-grade expertise at pricing that makes sense for growth-stage businesses and independent professionals.</p>
+      <ul class="vm-points">
+        <li class="vm-point">Premium quality — without the premium-only price tag</li>
+        <li class="vm-point">One relationship covering tax, finance and transactions</li>
+        <li class="vm-point">An organisation built with the depth to grow alongside your business</li>
+      </ul>
+    </div>
+    <div class="vm-card reveal reveal-delay-2">
+      <div class="vm-card-tag">Our Mission</div>
+      <h3 class="vm-title">To be the one-stop financial partner every business deserves — but rarely finds.</h3>
+      <p class="vm-body">Most businesses fragment their advisory relationships — a CPA for tax, a separate bookkeeper, and a referral for transactions. <strong>That fragmentation costs time, money and continuity.</strong> Our mission is to eliminate it — delivering compliance, CFO leadership and M&A advisory from a single, credentialed team that knows your business completely.</p>
+      <ul class="vm-points">
+        <li class="vm-point">Consolidate your advisors into one trusted collective</li>
+        <li class="vm-point">CA + CPA + EA — 25+ years of combined practice experience</li>
+        <li class="vm-point">Nationwide reach, remote-first, cloud-native delivery</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="section section-white" id="team">
+  <div class="eyebrow reveal">
+    <div class="eyebrow-line"></div>
+    <span>Our Collective</span>
+  </div>
+  <h2 class="display-title dark reveal">A structured collective of credentialed professionals.<br><em>Built to operate at scale.</em></h2>
+  <p class="body-lead dark reveal">TaxBooks.CFO is a structured professional organisation — a credentialed collective with 25+ years of combined experience across public accounting, corporate finance, M&amp;A advisory and CFO services. Built with the infrastructure, processes and team depth to operate at scale.</p>
+  <div class="team-grid reveal">
+    <div class="team-card">
+      <div class="tc-badge">CA (ICAI)</div>
+      <div class="tc-title">Chartered Accountants</div>
+      <div class="tc-body">ICAI-credentialed professionals with deep expertise in US and international tax, audit and financial reporting. India-based delivery team enabling high-quality preparation at efficient cost structures.</div>
+    </div>
+    <div class="team-card">
+      <div class="tc-badge">CPA</div>
+      <div class="tc-title">Certified Public Accountants</div>
+      <div class="tc-body">State-licensed CPAs with full representation rights, compliance capability and cross-state practice authority. US-based review and sign-off on all client-facing work and filings.</div>
+    </div>
+    <div class="team-card">
+      <div class="tc-badge">EA</div>
+      <div class="tc-title">Enrolled Agents</div>
+      <div class="tc-body">IRS-licensed specialists with unlimited representation rights for audits, appeals and collections — nationwide authority for the most complex tax controversy situations.</div>
+    </div>
+    <div class="team-card">
+      <div class="tc-badge">Finance</div>
+      <div class="tc-title">CFO Advisors</div>
+      <div class="tc-body">Senior financial professionals delivering fractional CFO services, cash flow strategy, KPI dashboards, forecasting models and board-level reporting to growth-stage businesses.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section section-warm" id="services">
+  <div class="eyebrow reveal">
+    <div class="eyebrow-line"></div>
+    <span>Service Spectrum</span>
+  </div>
+  <h2 class="display-title dark reveal">Everything a traditional firm does.<br><em>And what they can't.</em></h2>
+  <div class="services-layout">
+    <div class="services-tabs reveal">
+      <div class="stab active" onclick="showService(0,this)"><span class="stab-num">01</span><div class="stab-bar"></div><span class="stab-label">Core Accounting &amp; Tax</span></div>
+      <div class="stab" onclick="showService(1,this)"><span class="stab-num">02</span><div class="stab-bar"></div><span class="stab-label">Fractional CFO</span></div>
+      <div class="stab" onclick="showService(2,this)"><span class="stab-num">03</span><div class="stab-bar"></div><span class="stab-label">M&amp;A Transaction Advisory</span></div>
+      <div class="stab" onclick="showService(3,this)"><span class="stab-num">04</span><div class="stab-bar"></div><span class="stab-label">Practice Succession</span></div>
+    </div>
+    <div class="reveal">
+      <div class="service-panel active" id="sp-0">
+        <div class="sp-header"><div class="sp-num">SERVICE 01</div><div class="sp-title">Core Accounting &amp; Tax</div><div class="sp-desc">Full-scope compliance for individuals, businesses and international filers — all entity types, all states, all complexity levels handled by a credentialed CA/CPA team.</div></div>
+        <div class="sp-items">
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Individual returns — 1040, 1040-NR, dual-status, treaty filings</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Business returns — S-Corp, Partnership, C-Corp, Trust</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Bookkeeping — QBO, Xero, cloud-native platforms</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Payroll — 941/940, W-2, 1099, state compliance</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">IRS notices, audits, CP2000 and full representation</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">FICA refund claims, Form 843 filings</div></div>
+        </div>
+      </div>
+      <div class="service-panel" id="sp-1">
+        <div class="sp-header"><div class="sp-num">SERVICE 02</div><div class="sp-title">Fractional CFO</div><div class="sp-desc">Executive-level financial leadership without the cost of a full-time hire. We step into the CFO role — compliance is the starting point, not the finish line.</div></div>
+        <div class="sp-items">
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Month-end close, financial statements &amp; reporting packages</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Cash flow forecasting &amp; budget management</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">KPI dashboards &amp; management reporting packs</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Strategic planning &amp; scenario modelling</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Board-ready &amp; investor-ready financial presentations</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Business performance advisory &amp; growth planning</div></div>
+        </div>
+      </div>
+      <div class="service-panel" id="sp-2">
+        <div class="sp-header"><div class="sp-num">SERVICE 03</div><div class="sp-title">M&amp;A Transaction Advisory</div><div class="sp-desc">When your clients buy or sell a business, they need more than a CPA. We provide in-house transaction advisory that most firms refer out — keeping value in the relationship.</div></div>
+        <div class="sp-items">
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Buy-side &amp; sell-side financial due diligence</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Quality of Earnings (QoE) analysis</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Deal structuring &amp; tax optimisation</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Post-acquisition financial integration</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Cap table review &amp; equity advisory</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">LOI review and financial model construction</div></div>
+        </div>
+      </div>
+      <div class="service-panel" id="sp-3">
+        <div class="sp-header"><div class="sp-num">SERVICE 04</div><div class="sp-title">Practice Succession &amp; Partnership</div><div class="sp-desc">For retirement-minded CPAs and EAs — structured transition arrangements designed to protect your clients, preserve your legacy and ensure continuity. All terms discussed confidentially.</div></div>
+        <div class="sp-items">
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Full operational management from day one</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Structured income arrangements for the exiting practitioner</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Client continuity &amp; warm handoff process</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">CA/CPA-level service quality maintained throughout</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">White-label overflow &amp; referral arrangements</div></div>
+          <div class="sp-item"><div class="sp-dash">—</div><div class="sp-item-text">Confidential discussions — no obligation to proceed</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USPs -->
+<section class="section section-black">
+  <div class="eyebrow reveal"><div class="eyebrow-line"></div><span>Competitive Advantage</span></div>
+  <h2 class="display-title light reveal">Two capabilities no traditional<br>CPA firm <em>provides.</em></h2>
+  <div class="usp-grid reveal">
+    <div class="usp-card light">
+      <div class="usp-tag light"><div class="usp-num">01</div>Fractional CFO</div>
+      <h3 class="usp-title light">Your clients get a CFO without hiring one full-time.</h3>
+      <p class="usp-hook">Most CPA firms stop at compliance. We don't.</p>
+      <p class="usp-body light">We step into the CFO role — providing cash flow strategy, financial modelling, board reporting and executive-level advisory that businesses need to grow. For the retiring CPA's clients, this is an upgrade, not a replacement.</p>
+      <ul class="usp-list light">
+        <li>Monthly CFO reporting package included with engagement</li>
+        <li>Strategic planning and multi-scenario budgeting support</li>
+        <li>Board and investor-ready financial presentations</li>
+        <li>Creates premium advisory revenue beyond compliance</li>
+      </ul>
+    </div>
+    <div class="usp-card dark">
+      <div class="usp-tag dark"><div class="usp-num">02</div>M&amp;A Advisory</div>
+      <h3 class="usp-title dark">Due diligence and deal structuring — in-house.</h3>
+      <p class="usp-hook">When clients transact, most CPAs refer out. We don't.</p>
+      <p class="usp-body dark">When your clients — or their clients — are in a transaction, they need QoE analysis, tax structuring and financial due diligence. We provide it internally, creating advisory revenue streams that most CPA practices never access.</p>
+      <ul class="usp-list dark">
+        <li>Quality of Earnings analysis on acquisitions</li>
+        <li>Tax-efficient deal structure and entity advisory</li>
+        <li>Post-acquisition financial integration support</li>
+        <li>Premium advisory fees vs. standard compliance work</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SUCCESSION -->
+<section class="section section-dark" id="succession">
+  <div class="succession-layout">
+    <div class="succession-left">
+      <div class="eyebrow reveal"><div class="eyebrow-line"></div><span>Practice Succession</span></div>
+      <h2 class="display-title light reveal">A different kind of<br><em>succession arrangement.</em></h2>
+      <p class="body-lead light reveal">For retirement-minded CPAs and EAs who want to step back without abandoning their clients. We take over full operations — your clients receive the same quality of service, your legacy is protected, and the transition is structured around your timeline.</p>
+      <a href="https://calendly.com/charantej227/30min" target="_blank" class="btn-gold reveal" style="display:inline-block;margin-top:8px;">Begin a Confidential Conversation</a>
+    </div>
+    <div class="succession-right reveal">
+      <div class="succ-card">
+        <div class="succ-n">01 / OPERATIONS</div>
+        <div class="succ-title">Full operational management</div>
+        <div class="succ-body">TaxBooks.CFO assumes complete operational responsibility — tax preparation, bookkeeping, client communication, filings and compliance — from day one of the arrangement.</div>
+      </div>
+      <div class="succ-card">
+        <div class="succ-n">02 / CONTINUITY</div>
+        <div class="succ-title">Client continuity preserved</div>
+        <div class="succ-body">Clients are introduced through a warm, co-signed process. They receive CA/CPA-level service throughout — and gain access to Fractional CFO and M&amp;A advisory they never had before.</div>
+      </div>
+      <div class="succ-card">
+        <div class="succ-n">03 / LEGACY</div>
+        <div class="succ-title">Your legacy protected</div>
+        <div class="succ-body">The practice you built reflects your values. We honour that — maintaining the quality standard your clients expect, under your name for as long as appropriate.</div>
+      </div>
+      <div class="succ-card">
+        <div class="succ-n">04 / TERMS</div>
+        <div class="succ-title">Structured to your timeline</div>
+        <div class="succ-body">Whether stepping back over three years or seeking an immediate clean exit — arrangements are structured around your goals. All terms discussed confidentially, no obligation to proceed.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO WE SERVE -->
+<section class="section section-white" id="serve">
+  <div class="eyebrow reveal"><div class="eyebrow-line"></div><span>Who We Serve</span></div>
+  <h2 class="display-title dark reveal">Four types of partnerships.<br><em>One standard of service.</em></h2>
+  <div class="serve-grid reveal">
+    <div class="serve-card">
+      <div class="sc-badge">Succession</div>
+      <div class="sc-title">Retirement-minded CPAs &amp; EAs</div>
+      <div class="sc-body">You have built a practice over decades. We offer a structured path to step back — without abandoning your clients or compromising the standard of service they expect. Discussed confidentially, structured around your timeline.</div>
+    </div>
+    <div class="serve-card">
+      <div class="sc-badge">Overflow</div>
+      <div class="sc-title">Active CPA &amp; EA firms</div>
+      <div class="sc-body">Extension season overflow, bookkeeping clients you cannot fully service, or preparation work you would prefer to hand off — we operate under your brand, to your standards, with CA/CPA review on everything we deliver.</div>
+    </div>
+    <div class="serve-card">
+      <div class="sc-badge">CFO Services</div>
+      <div class="sc-title">Growth-stage businesses</div>
+      <div class="sc-body">You need senior financial leadership but not a full-time CFO. We deliver fractional CFO services — cash flow strategy, board reporting, forecasting and management packs — on a flexible engagement basis tailored to your stage.</div>
+    </div>
+    <div class="serve-card">
+      <div class="sc-badge">Transactions</div>
+      <div class="sc-title">Businesses buying or selling</div>
+      <div class="sc-body">When a transaction is on the table, you need more than a CPA. Our M&amp;A advisory team provides financial due diligence, Quality of Earnings analysis and deal structuring — in-house, not referred out.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-warm">
+  <div class="eyebrow reveal"><div class="eyebrow-line"></div><span>Common Questions</span></div>
+  <h2 class="display-title dark reveal">Questions we hear —<br><em>and our answers.</em></h2>
+  <div class="faq-list reveal">
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q-row"><div class="faq-q">How do I know my clients will be properly cared for?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">Clients are assigned to a dedicated CA/CPA — not a call centre. They receive the same quality of service, often with broader advisory capability through our Fractional CFO team. Your personal endorsement in the introduction carries the relationship through the transition.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q-row"><div class="faq-q">How is a succession arrangement structured?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">Every arrangement is structured around the practitioner's specific situation, timeline and goals. We discuss the details confidentially — reach out to start a no-obligation conversation and we will walk through how it works for your specific practice.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q-row"><div class="faq-q">Can I stay involved part-time after the transition?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">Entirely your choice. Many partners remain as senior advisors for specific long-term clients. The structure accommodates your preference — some are fully hands-off within months, others check in regularly for years. There is no fixed requirement either way.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q-row"><div class="faq-q">Do you work with brokers representing practices?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">Yes — we work directly with brokers and advisors representing retirement-minded practitioners. If you are representing a practice and want to explore whether our model is a fit, contact us directly for a confidential discussion of the opportunity.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q-row"><div class="faq-q">How does white-label overflow support work for active firms?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">We operate under your brand, your SLA, inside your existing software. Extensions, overflow returns, bookkeeping clients — we handle preparation and delivery seamlessly. Per-return pricing or monthly retainer arrangements are available depending on volume and scope.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q-row"><div class="faq-q">Are you equipped to serve clients across all 50 states?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">Yes. We are fully remote and cloud-native — operating in QBO, Xero, Drake and other platforms your clients already use. Our CA/CPA team handles federal and all state filings. Geography is not a constraint for any of our service lines.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-left">
+    <div class="eyebrow reveal" style="margin-bottom:20px;">
+      <div class="eyebrow-line"></div>
+      <span style="color:rgba(184,146,42,0.6);">Get In Touch</span>
+    </div>
+    <h2 class="contact-title reveal">Let's<br><strong>talk.</strong></h2>
+    <p class="contact-sub reveal">No pressure. An honest, confidential conversation about whether we are the right fit for your situation — succession, overflow, CFO services or M&amp;A advisory.</p>
+    <div class="contact-details reveal">
+      <div class="cd-row"><span class="cd-label">Email</span><span class="cd-val"><a href="mailto:contactus@taxbookscfo.com">contactus@taxbookscfo.com</a></span></div>
+      <div class="cd-row"><span class="cd-label">Website</span><span class="cd-val"><a href="https://taxbookscfo.com">taxbookscfo.com</a></span></div>
+      <div class="cd-row"><span class="cd-label">Based</span><span class="cd-val">New Jersey, USA — Nationwide reach</span></div>
+    </div>
+    <div class="contact-socials reveal">
+      <a href="https://www.linkedin.com/company/107412083/" target="_blank" rel="noopener" class="social-btn" title="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href="https://www.instagram.com/taxwise.usa/" target="_blank" rel="noopener" class="social-btn" title="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      </a>
+      <a href="https://www.facebook.com/profile.php?id=61583769569043" target="_blank" rel="noopener" class="social-btn" title="Facebook">
+        <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="contact-right reveal reveal-delay-2">
+    <div class="form-card">
+      <div class="form-card-title">Schedule a Discovery Call</div>
+      <div class="form-card-sub">30 minutes. We assess fit and outline options for your situation.</div>
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" placeholder="John"></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Smith"></div>
+      </div>
+      <div class="form-group"><label>Email Address</label><input type="email" placeholder="john@smithcpa.com"></div>
+      <div class="form-group">
+        <label>I am a...</label>
+        <select>
+          <option value="">Select your situation</option>
+          <option>Retirement-minded CPA / EA</option>
+          <option>CPA firm seeking overflow support</option>
+          <option>Business owner seeking CFO services</option>
+          <option>Broker representing a practice</option>
+          <option>Business considering a transaction</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <a href="https://calendly.com/charantej227/30min" target="_blank" rel="noopener" class="form-submit">Book a 30-Minute Discovery Call →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name">TaxBooks<em>.CFO</em></div>
+      <div class="footer-desc">A collective of Chartered Accountants, CPAs and Enrolled Agents delivering full-spectrum accounting, Fractional CFO and M&A advisory — and a better succession model for retiring practitioners.</div>
+      <div class="footer-creds">
+        <span class="footer-cred">CA (ICAI)</span>
+        <span class="footer-cred">CPA</span>
+        <span class="footer-cred">EA</span>
+        <span class="footer-cred">25+ Years</span>
+        <span class="footer-cred">50 States</span>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul class="footer-links">
+        <li><a href="#services">Tax Preparation</a></li>
+        <li><a href="#services">Bookkeeping</a></li>
+        <li><a href="#services">Fractional CFO</a></li>
+        <li><a href="#services">M&A Advisory</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Partnerships</h4>
+      <ul class="footer-links">
+        <li><a href="#succession">Practice Succession</a></li>
+        <li><a href="#serve">Overflow Support</a></li>
+        <li><a href="#serve">White-Label Services</a></li>
+        <li><a href="#contact">Enquire Confidentially</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul class="footer-links">
+        <li><a href="#team">Our Collective</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+        <li><a href="https://calendly.com/charantej227/30min" target="_blank">Schedule a Call</a></li>
+        <li><a href="https://www.linkedin.com/company/107412083/" target="_blank">LinkedIn</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 TaxBooks.CFO LLC. All rights reserved. New Jersey, USA.</span>
+    <div class="footer-legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Disclaimer</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const follower = document.getElementById('follower');
+let mx=0, my=0, fx=0, fy=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cursor.style.left=mx+'px'; cursor.style.top=my+'px'; });
+function animFollower() {
+  fx += (mx-fx)*0.12; fy += (my-fy)*0.12;
+  follower.style.left=fx+'px'; follower.style.top=fy+'px';
+  requestAnimationFrame(animFollower);
+}
+animFollower();
+
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Service tabs
+function showService(idx, el) {
+  document.querySelectorAll('.service-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('sp-'+idx).classList.add('active');
+  el.classList.add('active');
+}
+
+// FAQ
+function toggleFAQ(el) {
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(f=>f.classList.remove('open'));
+  if(!isOpen) el.classList.add('open');
+}
+
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold:0.08, rootMargin:'0px 0px -32px 0px' });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// Marquee duplicate
+const mi = document.querySelector('.marquee-inner');
+if(mi) mi.innerHTML += mi.innerHTML;
+</script>
+</body>
+</html>
